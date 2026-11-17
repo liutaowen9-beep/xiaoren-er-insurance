@@ -1,0 +1,11 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "isolated": true,
+    "launchOptions": { "channel": "chrome", "headless": true },
+    "contextOptions": { "viewport": { "width": 1440, "height": 1000 }, "locale": "zh-CN", "serviceWorkers": "block" }
+  },
+  "network": { "allowedOrigins": ["http://127.0.0.1:3108"] },
+  "outputDir": "tmp/reports/e2e/mcp",
+  "timeouts": { "action": 8000, "navigation": 20000 }
+}

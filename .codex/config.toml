@@ -1,0 +1,14 @@
+# Optional, public Motion documentation tools. No account or API key required.
+[mcp_servers.motion]
+url = "https://mcp.motion.dev"
+enabled = true
+startup_timeout_sec = 10
+tool_timeout_sec = 30
+
+# Official Microsoft Playwright MCP; use the isolated E2E UI server.
+[mcp_servers.playwright]
+command = "pnpm"
+args = ["dlx", "@playwright/mcp@latest", "--config", "tests/e2e/mcp.config.json"]
+enabled = true
+startup_timeout_sec = 45
+tool_timeout_sec = 45

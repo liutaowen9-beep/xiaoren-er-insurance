@@ -1,0 +1,76 @@
+/* shadcn/ui tokens adapt the existing brand; never redefine legacy tokens. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --ui-background: var(--bg);
+  --ui-foreground: var(--text);
+  --ui-card: var(--panel);
+  --ui-card-foreground: var(--text);
+  --ui-popover: var(--panel);
+  --ui-popover-foreground: var(--text);
+  --ui-primary: var(--brand-solid);
+  --ui-primary-foreground: var(--on-brand);
+  --ui-secondary: var(--hover);
+  --ui-secondary-foreground: var(--text);
+  --ui-muted: var(--code);
+  --ui-muted-foreground: var(--muted);
+  --ui-accent: var(--accent-soft);
+  --ui-accent-foreground: var(--text);
+  --ui-destructive: #b42318;
+  --ui-border: var(--line);
+  --ui-input: var(--line);
+  --ui-ring: var(--accent);
+  --ui-radius: 0.625rem;
+  --ui-sidebar: var(--sidebar);
+  --ui-sidebar-foreground: var(--on-brand);
+  --ui-sidebar-primary: var(--brand-solid);
+  --ui-sidebar-primary-foreground: var(--on-brand);
+  --ui-sidebar-accent: var(--accent-soft);
+  --ui-sidebar-accent-foreground: var(--on-brand);
+  --ui-sidebar-border: var(--line);
+  --ui-sidebar-ring: var(--accent);
+}
+
+:root[data-theme="dark"] {
+  --ui-destructive: #f97066;
+}
+
+@theme inline {
+  --color-background: var(--ui-background);
+  --color-foreground: var(--ui-foreground);
+  --color-card: var(--ui-card);
+  --color-card-foreground: var(--ui-card-foreground);
+  --color-popover: var(--ui-popover);
+  --color-popover-foreground: var(--ui-popover-foreground);
+  --color-primary: var(--ui-primary);
+  --color-primary-foreground: var(--ui-primary-foreground);
+  --color-secondary: var(--ui-secondary);
+  --color-secondary-foreground: var(--ui-secondary-foreground);
+  --color-muted: var(--ui-muted);
+  --color-muted-foreground: var(--ui-muted-foreground);
+  --color-accent: var(--ui-accent);
+  --color-accent-foreground: var(--ui-accent-foreground);
+  --color-destructive: var(--ui-destructive);
+  --color-border: var(--ui-border);
+  --color-input: var(--ui-input);
+  --color-ring: var(--ui-ring);
+  --color-sidebar: var(--ui-sidebar);
+  --color-sidebar-foreground: var(--ui-sidebar-foreground);
+  --color-sidebar-primary: var(--ui-sidebar-primary);
+  --color-sidebar-primary-foreground: var(--ui-sidebar-primary-foreground);
+  --color-sidebar-accent: var(--ui-sidebar-accent);
+  --color-sidebar-accent-foreground: var(--ui-sidebar-accent-foreground);
+  --color-sidebar-border: var(--ui-sidebar-border);
+  --color-sidebar-ring: var(--ui-sidebar-ring);
+  --radius-sm: calc(var(--ui-radius) - 4px);
+  --radius-md: calc(var(--ui-radius) - 2px);
+  --radius-lg: var(--ui-radius);
+  --radius-xl: calc(var(--ui-radius) + 4px);
+}
+
+/* Match shadcn's default border without applying a reset to old pages. */
+@layer base {
+  [data-slot] {
+    border-color: var(--ui-border);
+  }
+}

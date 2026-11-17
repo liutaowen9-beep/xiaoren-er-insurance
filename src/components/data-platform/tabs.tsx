@@ -1,0 +1,3 @@
+import Link from 'next/link';
+export const platformTabs=[['overview','数据总览','/data-platform'],['assets','数据资产目录','/data-platform/assets'],['lineage','数据血缘','/data-platform/lineage'],['runs','Agent 运行监控','/data-platform/runs'],['retrievals','RAG 检索追踪','/data-platform/retrievals'],['quality-analysis','数据质量分析','/data-platform/quality-analysis'],['versions','数据版本管理','/data-platform/versions'],['quality','数据质量管理','/data-platform/quality'],['snapshots','数据快照管理','/data-platform/snapshots']] as const;
+export function PlatformTabs({view,className}:{view:string;className?:string}){return <nav className={className} aria-label="数据中台模块">{platformTabs.map(([key,label,href])=><Link key={key} href={href} aria-current={view===key?'page':undefined}>{label}</Link>)}</nav>;}

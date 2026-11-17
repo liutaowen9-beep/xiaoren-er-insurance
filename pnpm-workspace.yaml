@@ -1,0 +1,14 @@
+allowBuilds:
+  unrs-resolver: true
+  sharp: true
+  esbuild: true
+  onnxruntime-node: true
+  protobufjs: true
+minimumReleaseAgeExclude:
+  - '@langchain/langgraph-sdk@1.12.8'
+  - '@langchain/langgraph@1.5.3'
+
+# Targeted security fixes; keep existing build permissions and release-age policy.
+overrides:
+  '@huggingface/transformers@3.8.1>sharp': '0.35.5'
+  'eslint-config-next@16.4.6>typescript-eslint': '8.73.0'

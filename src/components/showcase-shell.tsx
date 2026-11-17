@@ -1,0 +1,20 @@
+'use client';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { ArrowUpRight, BookOpen, ChartNoAxesCombined, Code2, Database, FileText, LayoutDashboard, Menu, Moon, Settings2, Sparkles, Sun, X } from 'lucide-react';
+import {PageSurface} from './visual-motion';
+import { BrandMark, useBranding } from './brand-provider';
+import { CORE_MODULES, PRODUCT_POSITION, type ModuleId } from '@/lib/showcase';
+const icons={workspace:LayoutDashboard,knowledge:BookOpen,analysis:ChartNoAxesCombined,reports:FileText,architecture:Code2};
+export function ShowcaseShell({active,children}:{active:ModuleId|'settings'|'data-platform'|'evaluation';children:React.ReactNode}){
+  const {brand}=useBranding(),[open,setOpen]=useState(false),[dark,setDark]=useState(false);
+  useEffect(()=>{const root=document.documentElement;try{const saved=localStorage.getItem('moyu-theme');if(saved==='dark'||saved==='light')root.dataset.theme=saved;}catch{/* Optional preference. */}const sync=()=>queueMicrotask(()=>setDark(root.dataset.theme==='dark'));sync();const observer=new MutationObserver(sync);observer.observe(root,{attributes:true,attributeFilter:['data-theme']});return()=>observer.disconnect();},[]);
+  const toggle=()=>{const value=document.documentElement.dataset.theme!=='dark';document.documentElement.dataset.theme=value?'dark':'light';setDark(value);try{localStorage.setItem('moyu-theme',value?'dark':'light');}catch{/* No effect on business data. */}};
+  const title=active==='evaluation'?'评测中台':active==='data-platform'?'数据中台':active==='settings'?'外观与品牌设置':CORE_MODULES.find(m=>m.id===active)!.title;
+  return <div className="suite-shell">{open&&<button className="suite-backdrop" aria-label="关闭导航" onClick={()=>setOpen(false)}/>}
+    <aside id="workspace-navigation" className={`suite-sidebar ${open?'is-open':''}`}><Link href="/" className="suite-brand" onClick={()=>setOpen(false)}><BrandMark/><span><strong>{brand.siteName}</strong><small>{brand.subtitle}</small></span></Link><button className="suite-close" aria-label="关闭导航" onClick={()=>setOpen(false)}><X size={20}/></button>
+      <div className="suite-nav-caption">解决方案工作空间</div><nav aria-label="核心模块">{CORE_MODULES.map(m=>{const Icon=icons[m.id];const custom=m.id==='knowledge'?brand.knowledgeName:m.id==='reports'?brand.reportName:'';return <Link href={m.href} key={m.id} aria-current={active===m.id?'page':undefined} onClick={()=>setOpen(false)}><Icon size={19}/><span><strong>{m.title}</strong><small>{custom&&custom!==m.title?custom:m.description}</small></span>{m.id==='analysis'&&<em>对比</em>}</Link>;})}<Link href="/data-platform" aria-current={active==='data-platform'?'page':undefined} onClick={()=>setOpen(false)}><Database size={19}/><span><strong>数据中台</strong><small>只读资产、质量与快照</small></span></Link><Link href="/evaluation" aria-current={active==='evaluation'?'page':undefined} onClick={()=>setOpen(false)}><ChartNoAxesCombined size={19}/><span><strong>评测中台</strong><small>数据集、指标与人工复核</small></span></Link></nav>
+      <div className="suite-sidebar-footer"><Link href="/settings" aria-current={active==='settings'?'page':undefined}><Settings2 size={17}/>外观与品牌设置</Link><div><span/>V10.2 · 本地 AI 解决方案平台</div><small>用于 AI 产品功能展示与技术验证，非保险销售系统或生产环境。</small></div>
+    </aside><div className="suite-main"><header className="suite-topbar"><div><button className="suite-menu" aria-label="打开导航" aria-expanded={open} aria-controls="workspace-navigation" onClick={()=>setOpen(true)}><Menu size={21}/></button><span className="suite-breadcrumb">工作空间 <span>/</span> <strong>{title}</strong></span></div><div className="suite-topbar-actions"><span className="suite-demo-label">作品集演示</span><Link href="/?mode=chat"><Sparkles size={15}/><span>AI 助手</span><ArrowUpRight size={14}/></Link><button aria-label="切换主题" onClick={toggle}>{dark?<Sun size={18}/>:<Moon size={18}/>}</button></div></header><PageSurface className="suite-content">{children}</PageSurface><footer className="suite-footer"><span>{brand.siteName} · {PRODUCT_POSITION}</span><span>基于现有能力构建，规划能力明确标注</span></footer></div>
+  </div>;
+}

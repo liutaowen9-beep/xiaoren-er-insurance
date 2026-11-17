@@ -1,0 +1,56 @@
+node_modules/
+.next/
+.next-v7/
+.next-e2e/
+playwright-report/
+test-results/
+# Private runtime data: connection registrations, platform/evaluation databases,
+# generated reports, fonts, screenshots, audit logs and local backup manifests.
+tmp/reports/
+/tmp/private-v7-diagnostics/
+out/
+*.log
+# Only the blank template is publishable; local environment files stay private.
+.env*
+!.env.example
+*.tsbuildinfo
+.moyu/
+# Isolated test databases, uploaded fixtures and downloaded embedding caches.
+tmp/rag-tests/
+
+# Local acceptance report containing private knowledge-base evidence
+/QUALITY-FIX-VERIFICATION.md
+
+# Private databases, indexes, uploads and model weights
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+*.onnx
+*.onnx_data
+*.pem
+*.key
+/uploads/
+/data/
+/models/
+/vectors/
+/storage/
+.cache/
+
+# Additional generated output
+/dist/
+/build/
+/coverage/
+/preview.png
+/deepseek-preview.png
+/rag-preview.png
+
+# Public source package: local runtime, recovery and backup material stays private.
+/tmp/
+/backups/
+/recovery/
+/private/
+/logs/
+*.bak

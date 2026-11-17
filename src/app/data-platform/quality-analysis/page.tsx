@@ -1,0 +1,2 @@
+import {PlatformMonitor} from '@/components/data-platform/monitor';
+export default async function Page({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){const q=await searchParams;const selected=typeof q.request==='string'&&/^[0-9a-f-]{36}$/.test(q.request)?q.request:'';const asset=typeof q.assetId==='string'&&/^[0-9a-f]{64}$/.test(q.assetId)?q.assetId:'';return <PlatformMonitor key={selected+asset} view="quality-analysis" initialSelection={selected} initialAsset={asset}/>;}
