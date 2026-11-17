@@ -1,257 +1,331 @@
 # 小人儿保险
 
-**基于 RAG、LangGraph Agent 和结构化报告的本地 AI 解决方案平台。**
+<p align="center">
+  <strong>AI Agent 驱动的保险资料检索、客户需求分析与结构化报告演示平台</strong>
+</p>
 
-正式项目名称统一为 **小人儿保险**，英文包名及建议 GitHub 仓库名为 `xiaoren-er-insurance`。所有新增展示、提示词与导出模板均遵循该命名。品牌与维护规则见 [AGENTS.md](AGENTS.md)，每次开发后执行 `pnpm check:brand`；公开包验收见 [独立发布说明](docs/PUBLIC-RELEASE.md)。
+<p align="center">
+  面向 AI 售前解决方案顾问场景，展示从业务需求理解、私有知识检索、工具编排、证据核验到报告交付的完整技术实践。
+</p>
 
-![桌面端工作台（隔离浏览器验收截图，无私人资料）](docs/images/workspace-desktop.png)
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16.4.6-000000?logo=next.js" alt="Next.js 16.4.6" />
+  <img src="https://img.shields.io/badge/React-19-149ECA?logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/LangGraph.js-1.5-1C3C3C" alt="LangGraph.js" />
+  <img src="https://img.shields.io/badge/RAG-SQLite%20%2B%20Embeddings-4B8B6B" alt="RAG" />
+  <img src="https://img.shields.io/badge/DeepSeek-API-4D6BFE" alt="DeepSeek API" />
+  <img src="https://img.shields.io/badge/Tests-337%20PASS-brightgreen" alt="337 tests passed" />
+  <img src="https://img.shields.io/badge/Playwright-132%20PASS-2EAD33?logo=playwright" alt="132 Playwright tests passed" />
+</p>
 
-手机端展示见 [移动端工作台](docs/images/workspace-mobile.png)。截图仅证明界面展示，不代表真实付费模型效果。
+<p align="center">
+  <a href="https://github.com/liutaowen9-beep/xiaoren-er-insurance">GitHub 仓库</a>
+  ·
+  <a href="docs/PUBLIC-RELEASE.md">公开发布与验收说明</a>
+  ·
+  <a href="#本地运行">本地运行</a>
+  ·
+  <a href="#面试展示建议">面试展示建议</a>
+</p>
 
-项目围绕“用户需求 → 私有资料检索 → 工具执行 → 证据核验 → 可编辑报告”构建完整演示链路，并扩展数据资产管理、运行观测和 AI 评测。当前功能版本为 **V10.2**；本公开包取自完整工作区，不携带原仓库历史。
+> **项目状态**：公开源码与本地运行说明已发布；目前没有公网在线演示地址。项目定位为本地单用户技术演示，不是保险销售、投保、支付或承保系统。
 
-> 本公开包包含当前工作区的品牌统一与安全修复，不含原 Git 历史、真实知识库、用户数据或 API Key。Next.js / eslint-config-next 为 16.4.6，XML 解析为 5.12.1；其余定向安全依赖约束见 pnpm-workspace.yaml。独立验收结果见 [发布说明](docs/PUBLIC-RELEASE.md)。真实付费模型输出为 NOT TESTED。
+![小人儿保险桌面工作台](docs/images/workspace-desktop.png)
 
-这是本机单用户技术展示与验证项目，不是保险销售系统、生产 CRM，也不提供自动投保、支付或承保承诺。涉及产品事实的输出需要核对原始资料；AI 推断不等于保险公司官方条款。
+<p align="center">
+  <em>桌面端工作台截图。截图用于展示界面与信息架构，不代表真实付费模型输出效果。</em>
+</p>
 
-## 已实现能力
+---
 
-| 模块 | 实际能力与入口 |
-| --- | --- |
-| AI 业务工作台 | 品牌工作台、能力导航、浏览器本地最近活动；`/` |
-| 智能聊天 | DeepSeek 服务端调用、流式回复、停止、重试、Markdown、代码块和本地历史；`/chat` |
-| 私有知识库 | PDF / DOCX / TXT / MD 上传、解析、切片、本地向量化、检索、来源引用；`/knowledge` |
-| 文档生命周期 | 替换、停用、恢复、归档、取消归档、不可覆盖版本及历史引用 |
-| LangGraph Agent | 真实 StateGraph 节点、条件路由、有限重试、取消和工具执行时间线；`/?mode=agent` |
-| 智能业务分析 | 客户需求结构化、信息缺口、候选产品证据核验、多产品字段对比；`/analysis` |
-| AI 报告 | 大纲、证据筛选、结构化报告、预览以及可编辑 DOCX / 中文 PDF；`/reports` |
-| 数据中台 | 只读知识库扫描、资产与版本、质量检查、SHA-256 快照、血缘、Agent 观测与 RAG 追踪；`/data-platform` |
-| 评测中台 | 版本化数据集、JSON/CSV 导入导出、检索指标、运行观测回放、离线规则与人工评分；`/evaluation` |
-| 真实模型评测中心 | 模型配置、逐任务付费授权、响应与 Token 记录、价格快照、规则评分、图表对比和导出；`/evaluation/models` |
-| 外观与品牌设置 | 网站与模块名称、主辅色、文字标识；localStorage 持久化；`/settings` |
+## 项目简介
 
-各模块同时保留真实执行入口与明确标识的 Mock 测试路径。**Mock 结果不代表真实模型质量。** 真实调用需要服务端凭据并可能产生费用；V10.2 模型中心还要求用户逐任务确认数据发送与预算。
+**小人儿保险**是一个围绕保险业务资料理解与证据整理构建的 AI 应用。它不是简单地把问题交给大模型生成答案，而是将业务流程拆分为可观察、可验证的环节：
 
-## 技术栈
+**用户需求 → 信息结构化 → 知识检索 → 工具执行 → 原文与版本核验 → 结构化结果 → Word / PDF 报告**
 
-- **应用**：Next.js 16 App Router、React 19、TypeScript、Tailwind CSS v4。
-- **Agent**：LangGraph.js / LangChain Core、DeepSeek Chat Completions、服务端安全工具白名单。
-- **RAG**：Node.js SQLite、本地 Transformers.js CPU 推理、多语言 Embedding、向量与受控关键词检索。
-- **交互**：shadcn/ui、Motion、Lucide、ECharts 按需加载及品牌主题适配。
-- **文档**：PDF.js、DOCX 解析、docx、pdf-lib、fontkit 和经校验的本地中文字体。
-- **质量保障**：node:test、ESLint、TypeScript、Playwright 桌面/移动端隔离回归。
-- **运行环境**：Node.js **24 或更新的兼容版本**（使用 `node:sqlite`）；项目实际采用 **pnpm**，保留 `pnpm-lock.yaml`。本轮检查环境为 Node 24 / pnpm 11。
+项目重点解决三个工程问题：
 
-## 系统架构
+1. **让回答有资料依据**：通过 RAG 检索本地授权资料，保留文档、版本、页码和片段来源；证据不足时明确提示，不凭空补全保险责任。
+2. **让复杂任务可编排**：通过 LangGraph StateGraph 管理节点、条件路由、工具调用、有限重试、取消和执行事件。
+3. **让结果可检查、可交付**：将客户输入、模型判断、资料原文、未知项和建议分层展示，并复用结构化数据生成 DOCX / 中文 PDF。
 
-```mermaid
-flowchart TB
-  UI[Next.js 页面 / 品牌主题 / 工作流与图表] --> API[本机同源 API / 输入校验 / 取消与限流]
-  API --> CHAT[聊天与模型适配器]
-  API --> AGENT[LangGraph / 工具白名单]
-  API --> REPORT[需求分析 / 对比 / 报告工作流]
-  AGENT --> TOOLS[knowledge_search / calculator / document_analyze]
-  TOOLS --> RAG[RAG / 当前有效版本 / 证据核验]
-  REPORT --> RAG
-  RAG --> KB[(knowledge.sqlite / 原文件 / 切片 / 向量)]
-  CHAT --> MODEL[DeepSeek 官方 API]
-  AGENT --> MODEL
-  REPORT --> MODEL
-  REPORT --> EXPORT[同一结构化数据 → DOCX / PDF]
-  KB -->|受控只读扫描| DATA[(platform.sqlite / 资产与运行元数据)]
-  API --> EVAL[(evaluation.sqlite / 数据集与评测历史)]
-  EVAL -->|版本只读副本| LIVE[(model-evaluation.sqlite / 授权与模型调用账本)]
-```
+本项目主要用于展示 AI 解决方案设计与工程落地能力。演示资料应使用合成数据或有权使用的公开资料，不应上传真实客户身份、健康信息或未经授权的保险文件。
 
-知识库、数据中台、评测中台和模型评测中心使用各自存储边界。聊天历史与品牌设置保存在浏览器；清除浏览器存储会影响这些本地记录。Git 只保存代码，不是数据库或浏览器记录备份。
+## 核心功能
 
-## Agent 工作流
+| 能力模块 | 当前实现 | 业务价值 |
+| --- | --- | --- |
+| AI 智能对话 | DeepSeek 服务端适配、流式回复、停止/重试、Markdown 与本地历史 | 提供自然语言交互入口 |
+| 私有知识库 RAG | PDF / DOCX / TXT / MD 解析、切片、本地 Embedding、向量与受控关键词检索、来源引用 | 将回答关联到可核验资料 |
+| LangGraph Agent | StateGraph 节点、条件路由、白名单工具、执行时间线、有限重试与取消 | 把多步骤任务变成可观察工作流 |
+| 客户需求分析 | 需求结构化、信息缺口、待确认沟通优先级、检索计划与证据核验 | 将自然语言需求转成可检查的信息 |
+| 产品资料对比 | 多资料字段提取、原文关联、缺失项与冲突提示 | 降低资料整理和横向比较成本 |
+| AI 报告 | 大纲、证据筛选、结构化报告预览、DOCX / 中文 PDF 导出 | 形成可编辑、可交付的结果 |
+| 数据中台 | 只读资产扫描、版本、质量检查、SHA-256 快照、血缘与运行观测 | 支持数据资产治理和运行追踪 |
+| AI 评测中台 | 版本化数据集、RAG 指标、Agent 观测回放、离线规则与人工复核 | 让评测过程可追溯，明确指标边界 |
+| 真实模型评测中心 | 模型配置、逐任务授权、Token/性能/费用记录、规则评分与对比 | 为受控模型评测提供流程基础 |
+
+页面入口示例：工作台 <code>/</code>、聊天 <code>/chat</code>、知识库 <code>/knowledge</code>、业务分析 <code>/analysis</code>、报告 <code>/reports</code>、数据中台 <code>/data-platform</code>、评测中台 <code>/evaluation</code>、模型评测 <code>/evaluation/models</code>。
+
+![小人儿保险移动端工作台](docs/images/workspace-mobile.png)
+
+## 端到端业务流程
 
 ```mermaid
 flowchart LR
-  I[任务与上下文校验] --> P[受约束的任务计划]
-  P --> R{条件路由}
-  R -->|需要工具| T[校验参数 / 执行白名单工具]
-  T --> V[核验真实结果与来源]
-  V -->|可恢复错误且未超限| R
-  V -->|证据就绪或已达边界| A[生成有依据的回答]
-  R -->|无需工具| A
-  A --> E[完成 / 失败 / 取消事件]
+    A[用户输入业务需求] --> B[需求结构化与信息缺口]
+    B --> C[制定检索计划]
+    C --> D[检索本地知识库]
+    D --> E[核验原文、版本与来源]
+    E --> F[工具执行与字段整理]
+    F --> G[生成结构化分析]
+    G --> H[预览与导出 DOCX / PDF]
+    E -->|证据不足或冲突| I[标记待核实 / 资料不足]
+    I --> G
 ```
 
-- 工具只在服务端执行；计算器不使用 `eval` 或 Shell。
-- 模型通过工具调用协议请求执行，服务端校验参数及工具调用 ID，再回传真实结果。
-- 节点和工具事件驱动可视化，不展示隐藏推理链，也不伪造并行、成功或进度。
-- 有最大轮数、工具超时、有限重试和取消保护；没有启用跨进程自动恢复的持久 checkpoint。
+## 系统技术架构
 
-## RAG 检索与引用
+```mermaid
+flowchart TB
+    USER[用户浏览器] --> UI[Next.js App Router<br/>React 19 / TypeScript]
+    UI --> API[同源 API<br/>输入校验 / 安全边界 / 取消]
+    API --> CHAT[聊天服务]
+    API --> GRAPH[LangGraph StateGraph]
+    API --> ANALYSIS[需求分析与产品对比]
+    API --> REPORT[报告生成服务]
 
-1. 文件扩展名、类型、大小及哈希校验；扫描 PDF 无可提取文字时明确提示 OCR 能力限制。
-2. 提取正文与可信页码，按自然边界及实际 Token 上限切片。
-3. 使用 `Xenova/multilingual-e5-small`、固定 revision、q8 CPU 推理，生成 **384 维**归一化向量。
-4. 切片、向量、版本和文档关联持久化；问题使用相同模型编码。
-5. 复用向量检索及经约束的关键词/文件名召回，默认只接受 `active + current + ready` 文档。
-6. 将来源片段作为不可信参考资料传给模型；任务执行与证据返回时再次检查有效性。
-7. 服务端生成真实来源标识，页面按需展示原文、版本和可靠页码。无证据时标记资料不足，不补造条款。
+    GRAPH --> TOOLS[服务端白名单工具]
+    TOOLS --> RAG[RAG 检索与证据核验]
+    ANALYSIS --> RAG
+    REPORT --> RAG
 
-已发给模型的资料无法撤回；相似度不等于适合性证明；历史来源可以保留历史身份，但不能冒充当前有效版本。
+    RAG --> KB[(SQLite<br/>文档 / 版本 / 切片 / 向量)]
+    CHAT --> LLM[DeepSeek API]
+    GRAPH --> LLM
+    ANALYSIS --> LLM
+    REPORT --> EXPORT[DOCX / 中文 PDF]
+
+    API --> DATA[(数据中台 SQLite)]
+    API --> EVAL[(评测 SQLite)]
+    API --> MODEL_EVAL[(模型评测 SQLite)]
+```
+
+### Agent 工作流设计
+
+LangGraph 用于管理有状态、多步骤的任务，而不是简单地把所有工作塞进一条超长提示词。
+
+```mermaid
+flowchart TD
+    START([开始]) --> VALIDATE[输入与上下文校验]
+    VALIDATE --> PLAN[任务计划]
+    PLAN --> ROUTE{条件路由}
+    ROUTE -->|需要工具| TOOL[参数校验与白名单工具执行]
+    TOOL --> VERIFY[核验工具结果与来源]
+    VERIFY -->|可恢复错误且未超限| ROUTE
+    VERIFY -->|证据就绪或达到边界| ANSWER[生成有依据的回答]
+    ROUTE -->|无需工具| ANSWER
+    ANSWER --> END([完成 / 失败 / 取消])
+```
+
+设计要点：
+
+- 节点、工具和状态变化来自实际执行事件，界面不伪造进度或成功状态。
+- 工具只在服务端执行，参数经过校验并限制在白名单内。
+- 设置最大轮数、超时、有限重试和取消保护。
+- 证据不足、资料冲突或任务失败时保留明确状态，不把未知值补成确定结论。
+- 当前没有启用跨进程自动恢复的持久 checkpoint，不将其描述为后台持久任务队列。
+
+### RAG 检索方案
+
+1. 校验文件类型、大小与哈希，解析 PDF、DOCX、TXT、Markdown。
+2. 按自然边界和 Token 上限切片，保留文档与页码关联。
+3. 使用 <code>Xenova/multilingual-e5-small</code> 本地生成 384 维归一化向量。
+4. 将文档、版本、切片和向量存储在本地 SQLite。
+5. 查询时组合向量召回与受约束的关键词/文件名候选。
+6. 默认只检索 <code>active + current + ready</code> 文档，并重新核验来源有效性。
+7. 将来源片段作为不可信参考资料交给模型，输出关联真实文档、版本和页码。
+8. 无证据时提示资料不足；相似度只用于召回，不等于条款正确或保险适合性证明。
+
+## 技术栈与选型理由
+
+| 层次 | 技术 | 选型考虑 |
+| --- | --- | --- |
+| Web 全栈 | Next.js 16 App Router、React 19、TypeScript | 页面与服务端 API 在同一应用内组织，类型约束清晰 |
+| 样式与交互 | Tailwind CSS v4、shadcn/ui、Motion、Lucide | 组件复用、主题统一、交互反馈与动效 |
+| 可视化 | ECharts | 展示评测、运行观测和结构化数据 |
+| Agent 编排 | LangGraph.js、LangChain Core | 显式状态、条件路由、工具调用与执行边界 |
+| 大模型 | DeepSeek Chat Completions API | 服务端模型适配，密钥不暴露给浏览器 |
+| RAG | Transformers.js、multilingual-e5-small、SQLite | 本地 Embedding 与持久化检索，适合单机演示 |
+| 文档交付 | PDF.js、docx、pdf-lib、fontkit | 解析资料并生成可编辑 Word / 中文 PDF |
+| 测试 | node:test、ESLint、TypeScript、Playwright | 逻辑、类型、代码规范及桌面/移动端回归 |
+
+## 工程质量与验收记录
+
+以下结果来自 **2026-11-17 独立公开发布包验收**，不是持续集成服务的实时状态。
+
+| 验收项 | 结果 | 验收边界 |
+| --- | --- | --- |
+| 独立依赖安装 | PASS | <code>pnpm install --frozen-lockfile</code> |
+| 品牌与类型检查 | PASS | <code>pnpm check</code> |
+| ESLint / TypeScript | PASS | 独立公开包 |
+| 自动化测试 | **337 / 337 PASS** | node:test；0 跳过 |
+| Playwright | **132 / 132 PASS** | 桌面 66 + 移动 66 |
+| Next.js 生产构建 | PASS | 独立公开包 |
+| 依赖安全审计 | 0 条公告 | 对应验收时锁定依赖与审计数据库 |
+
+**重要说明：**
+
+- 测试使用隔离数据；模型请求使用明确的 Mock。RAG 测试包含真实本地 Embedding 与检索流程，但这不等于真实 DeepSeek 答案质量验收。
+- 本次公开包验收没有调用真实付费 DeepSeek API；实际账单、线上模型可用性与完整业务输出质量为 **NOT TESTED**。
+- 自动化通过率不代表保险条款准确率，也不代表模型语义准确率。
+- 详细范围、依赖版本和限制见 [独立公开发布验收报告](docs/PUBLIC-RELEASE.md)。
 
 ## 本地运行
 
+### 环境要求
+
+- Node.js 24 或更新的兼容版本（项目使用 <code>node:sqlite</code>）。
+- pnpm 11.25.0（以仓库 <code>package.json</code> 的 <code>packageManager</code> 为准）。
+- 首次安装和公开模型/字体下载需要网络。
+
 ### 1. 安装依赖
 
-在项目根目录执行：
-
 ```powershell
-node --version
-pnpm --version
 pnpm install --frozen-lockfile
 ```
 
-如本机没有 pnpm，请先安装与锁文件兼容的 pnpm。不要在同一个项目混用 npm/yarn 锁文件。本仓库不包含 API Key、知识库、模型权重、中文字体或个人备份。
-
 ### 2. 配置环境变量
 
-首次安装且 `.env.local` 尚不存在时：
+首次运行时复制模板：
 
 ```powershell
-if (-not (Test-Path -LiteralPath '.env.local')) {
-  Copy-Item -LiteralPath '.env.example' -Destination '.env.local'
-}
+Copy-Item .env.example .env.local
 notepad .env.local
 ```
 
-在编辑器里自行填写 `DEEPSEEK_API_KEY`，不要贴到聊天、截图、日志或 Git。密钥仅由服务端读取，禁止使用 `NEXT_PUBLIC_` 前缀。未配置凭据时真实模型入口应提示错误；可使用支持 Mock 的页面验证交互。
+按需填写服务端 <code>DEEPSEEK_API_KEY</code>。真实密钥只放在本地 <code>.env.local</code>，不要提交到 Git，也不要使用 <code>NEXT_PUBLIC_</code> 前缀。
 
-| 变量 | 用途 | 默认与限制 |
+| 变量 | 用途 | 默认值 |
 | --- | --- | --- |
-| `DEEPSEEK_API_KEY` | DeepSeek 服务端凭据 | 示例空值；真实调用自行配置 |
-| `RAG_MAX_UPLOAD_MB` | 单文件上传上限 | 默认 10，允许 1～30 |
-| `RAG_TOP_K` | 默认召回数量 | 默认 5，允许 1～10 |
-| `RAG_MIN_SCORE` | 基础向量相似度门槛 | 默认 0.88，允许 0～1；不能仅靠降低门槛掩盖召回问题 |
+| <code>DEEPSEEK_API_KEY</code> | DeepSeek 服务端 API 凭据 | 空 |
+| <code>RAG_MAX_UPLOAD_MB</code> | 单文件上传大小上限 | 10 |
+| <code>RAG_TOP_K</code> | 默认检索召回数量 | 5 |
+| <code>RAG_MIN_SCORE</code> | 基础向量相似度门槛 | 0.88 |
 
-可选参数在模板中保持注释，使用默认值即可；需要启用时填写合法值，不能把空值直接取消注释。不要自行配置内部测试、维护、部署指纹或付费授权变量来绕过检查。启动脚本会在进程内设置必要参数，不需要把它们写入 `.env.local`。
-
-**付费边界**：设置密钥后，手动使用普通聊天、真实分析/报告等入口可能计费；模型评测中心有额外逐任务授权。不要认为所有页面都受模型评测中心的预算机制约束。
-
-### 3. 准备本地 Embedding 与中文 PDF 字体
-
-首次在 Windows 新环境使用知识库前，下载公开模型文件：
+### 3. 准备本地模型与字体
 
 ```powershell
 pnpm setup:embedding
 pnpm setup:report-font
 ```
 
-Node 下载脚本固定模型 revision，对大小、LFS SHA-256 或 Git blob 哈希进行校验，不需要修改 PowerShell 执行策略；Embedding 推理仅从本地加载，不会在浏览器下载私有索引。模型默认位于 `tmp/rag-tests/management/models/`，字体与授权文件位于 `tmp/reports/fonts/`。网络失败或版本校验失败时保留错误并核对上游文件，不要跳过哈希校验。
+脚本从公开来源下载固定版本资源并校验哈希。模型权重、字体缓存和私有知识库不会随 GitHub 仓库分发。
 
-如果网络需要代理，先在自己的系统中正确配置 `HTTPS_PROXY` / `HTTP_PROXY`，然后可用 Node 24 的代理支持重试；不要把含凭据的代理地址写入仓库：
+### 4. 启动开发环境
 
 ```powershell
-node --use-env-proxy scripts/setup-embedding.mjs
-node --use-env-proxy scripts/setup-report-font.mjs
+pnpm dev --port 3003
 ```
 
-本次独立验收通过此方式从官方公开来源重新获取了模型与字体，没有复制原项目缓存。下载和依赖安装需要网络；首次运行耗时与网络、CPU 和磁盘条件有关。
+浏览器打开 [http://127.0.0.1:3003](http://127.0.0.1:3003)。
 
-上述默认模型脚本只面向默认沙箱。如果当前机器已注册独立知识库，它的模型缓存位于独立根目录下的 `models/`，应按现有登记方案配置，不能把默认下载位置误认为正在使用的位置。
-
-### 4. 启动
+### 5. 生产构建与启动
 
 ```powershell
-# 开发模式
-pnpm dev --port 3003
-
-# 或：生产模式，适合稳定演示；修改源码后需要重新构建并重启
 pnpm build
 pnpm start --port 3003
 ```
 
-运行器默认端口为 3002；本说明使用 `pnpm start --port 3003`，访问 [http://127.0.0.1:3003](http://127.0.0.1:3003)，避免与已有本地项目冲突。开发模式可用 `pnpm dev --port 3003`。不要在同一端口重复启动服务；开发构建和稳定生产演示建议分开运行。
-
-新克隆不包含本机私有连接描述，不会自动恢复原知识库。默认使用 `tmp/rag-tests/management/` 沙箱。现有机器若有 `tmp/reports/local-knowledge.json`，启动脚本优先选取其已登记独立知识库；否则可能读取 `tmp/reports/knowledge-connection.json` 的受校验部署收据。**这些文件不可上传，也不可为了演示覆盖或删除。** 手动填一个数据库路径不会绕过部署保护。
-
-需要新建独立知识库时，可先阅读 `scripts/create-local-knowledge.ts`，显式登记一个尚不存在的本机绝对目录，再按 `scripts/run-v7.mjs` 的受控连接格式登记。不要直接复制生产连接文件、修改旧库 schema 或批量重建真实向量。本轮发布准备不创建或迁移任何知识库。
-
-## 测试与构建
+### 6. 运行检查
 
 ```powershell
 pnpm check
-pnpm test
 pnpm lint
 pnpm typecheck
-pnpm build
-
-# 首次运行浏览器回归时安装匹配的 Chromium
+pnpm test
 pnpm test:e2e:install
 pnpm test:e2e
+pnpm build
 ```
 
-- `pnpm test` 保留 node:test 测试体系，模型网络请求使用显式 Mock；SQLite、解析、Embedding、检索、StateGraph 和导出按具体用例执行。
-- `pnpm test:e2e` 构建独立 `.next-e2e`，使用 3108 代理与 3109 内部服务；拒绝未模拟业务 API，不连接正式知识库或付费模型。
-- Playwright 覆盖桌面与手机视口。报告位于 `tmp/reports/e2e/latest/`，只应本地查看。
-- 首次缺少模型或中文字体时，先完成公开依赖准备。不要把跳过用例、降低断言或模拟结果当成真实集成成功。
-- 自动化通过率不是 AI 答案准确率；真实 DeepSeek 的可用性、实际用量、模型质量和账单需要另行授权验收。本轮发布准备不调用付费 API。
-
-## 数据与评测中台
-
-- 数据中台只保存受控资产元数据、质量结果、哈希快照和脱敏运行观测；快照清单不等于完整数据备份。
-- V10.1 评测使用独立 `evaluation.sqlite`，支持文档级/切片级检索指标、Agent 运行观测回放、规则标注与人工复核。
-- V10.2 使用独立 `model-evaluation.sqlite`，冻结数据集版本、模型登记版本、Prompt、规则、代码与价格来源。
-- 五维质量分是可解释规则代理，不等于完整语义正确率；未标注、未返回的 Token、首响应、费用保留 `UNKNOWN`。
-- 费用为实际用量乘以冻结价格的估算或区间，不是供应商账单。预算预留不是供应商硬额度。
-
-详细说明：[数据中台](docs/DATA-PLATFORM.md)、[运行观测](docs/DATA-OBSERVATION.md)、[评测中台](docs/EVALUATION-PLATFORM.md)、[真实模型评测](docs/REAL-MODEL-EVALUATION.md)。以实际存在的说明和源码为准。
+新克隆后的知识库、数据中台和评测记录为空是预期行为。请使用自己有权使用的公开或合成资料建立演示数据，不要尝试复制原开发环境中的私人数据库。
 
 ## 项目目录
 
 ```text
-src/app/                    页面与服务端 API Route
-src/components/             工作台、聊天、知识库、分析、报告与中台界面
-  ui/                       shadcn/ui 基础组件
-  charts/                   ECharts 图表封装
-src/lib/
-  rag/                      文档版本、解析、Embedding、检索与数据库访问
-  agent/                    LangGraph 状态、工具、事件与调度
-  needs/                    客户需求结构化、检索与证据分析
-  comparison/               产品字段提取与对比
-  reports/                  报告工作流、结构化校验与 DOCX/PDF
-  data-platform/            只读扫描、质量、快照、血缘与运行观测
-  evaluation/               数据集与离线评测
-  model-center/             模型配置、授权、执行、规则与成本
-scripts/                    启动、公开资源下载、隔离测试与维护工具
-tests/                      node:test 与 Playwright
-docs/                       技术设计、限制与脱敏验证说明
-.agents/skills/              项目开发规范
-.codex/config.toml          可选开发工具配置，不是运行凭据
-.env.example                空白环境变量模板
-pnpm-lock.yaml              可重复安装锁文件
+src/
+├── app/                 # 页面与服务端 API
+├── components/          # 工作台、聊天、知识库、中台与图表组件
+└── lib/
+    ├── agent/            # LangGraph 状态、节点、工具与事件
+    ├── rag/              # 文档解析、Embedding、检索与存储
+    ├── needs/            # 客户需求结构化与分析
+    ├── comparison/       # 产品字段提取与对比
+    ├── reports/          # 报告工作流与 DOCX / PDF 导出
+    ├── data-platform/    # 数据资产、质量、快照与观测
+    ├── evaluation/       # 数据集与离线评测
+    └── model-center/     # 模型配置、授权、执行与成本记录
+docs/                    # 架构、模块设计、发布与测试说明
+scripts/                 # 启动、模型资源准备与维护脚本
+tests/                   # node:test 与 Playwright 测试
+.env.example             # 空白环境变量模板
+pnpm-lock.yaml           # pnpm 依赖锁文件
+AGENTS.md                # 项目开发与品牌规范
 ```
 
-## GitHub 发布与数据安全
+## 面试展示建议
 
-**允许发布**：经过审查的源码、测试、锁文件、必要配置、空白 `.env.example`、不含私有资料的文档与演示资源。
+如果用于 AI 售前解决方案顾问岗位，可以按以下顺序讲解：
 
-**必须排除**：`.env.local` 等环境文件、密钥/令牌、SQLite 与 WAL/SHM、上传原件、切片/向量、模型权重、用户记录、报告/截图中的隐私、部署与连接描述、本地备份、构建输出、`node_modules`。
+1. **业务理解**：为什么保险资料问答不能只依赖大模型，需要先识别需求、资料范围和信息缺口。
+2. **总体方案**：为什么采用 Next.js + LangGraph + RAG，前后端、模型、工具和数据如何协作。
+3. **核心技术**：如何实现 StateGraph 条件路由、工具白名单、RAG 版本过滤和来源追溯。
+4. **质量与安全**：如何处理无证据、资料冲突、取消、超时、Mock 与真实模型的边界。
+5. **交付方式**：如何通过结构化报告、DOCX/PDF、自动化测试和运行观测形成可检查的交付结果。
 
-现有 `.gitignore` 排除了已确认的上述本地目录及数据库类型；它不会自动移除已经进入 Git 历史的内容。提交前仍需检查 `git status` 和暂存区。不要对未知文件直接执行 `git add .`，不要推送 `--all` 或 `--mirror` 来替代逐分支审查。
+### 90 秒项目介绍参考
 
-Git 存档不包含私有知识库和 localStorage。故障恢复需要另外保存原始文件、数据库一致性备份、模型规格、连接配置和恢复步骤；不要用 Git 切换冒充数据库恢复。
+> 我做的项目叫“小人儿保险”，它是一个面向保险资料检索和业务分析场景的 AI Agent 演示平台。它不是简单的聊天机器人，而是把客户需求结构化、知识库检索、工具执行、原文证据核验和报告生成串成一套工作流。
+>
+> 技术上，前端和服务端使用 Next.js、React 和 TypeScript；复杂任务通过 LangGraph 管理状态和条件路由；RAG 使用本地 Embedding 与 SQLite 保存文档版本、切片和向量；模型通过服务端适配 DeepSeek。为了让结果可追溯，我还设计了数据中台和评测中台，记录数据版本、运行过程和可计算指标。
+>
+> 项目中特别重视证据边界：没有资料就明确提示资料不足，来源冲突就保留待核实，不把模型生成直接当成保险条款结论。当前版本以本地单用户演示为主，真实付费模型和多用户公网部署仍需单独验收。
 
-若发现真实密钥进入历史：先停止发布并在供应商侧吊销/轮换，调查已公开范围，再在另行确认后处理历史清理及协作者副本；仅删除当前文件不够。不要擅自 force push 或改写历史。
+## 设计边界与后续规划
 
-本项目尚未声明项目级开源许可证。公开分发前需要确认源码、第三方素材、字体及保险资料的授权；模型权重、私有资料和报告不因代码发布而自动获得再分发许可。
+### 当前边界
 
-## 使用边界
+- 当前是**本地单用户应用**，不是已部署的公网多用户 SaaS。
+- 公开仓库不包含真实知识库、客户数据、数据库、模型权重或 API Key。
+- 真实模型调用可能产生费用；公开包的真实付费 DeepSeek 端到端验收尚未完成。
+- 当前未实现企业级身份认证、租户隔离和公网服务所需的完整配额体系。
+- 项目没有声明开源许可证；公开可见不等于授予他人任意复制、分发或商用的权利。
+- AI 输出仅辅助资料整理与分析，不替代保险公司官方条款、专业核保或人工审核。
 
-当前为本机单用户设计，接口以本机同源校验为基础。公开部署前还需要身份认证、权限与用户数据隔离、服务端持久限流、配额、供应商侧费用上限和独立安全审查。不要直接把本地私有知识库服务暴露到公网。
+### 后续可演进方向
 
-结构和引用校验不能保证所有业务事实正确；资料缺失、冲突、版本失效时应保留待核实状态。报告只辅助资料整理，不提供未经证据支持的保险承诺。
+- 在完成身份认证、租户隔离、持久化存储、限流和费用控制后，再评估公网演示部署。
+- 使用脱敏或合成数据补充真实模型质量评测，并记录数据集、Prompt、模型版本和价格快照。
+- 持续完善可观测性、人工复核和证据质量评估。
 
-## 干净公开包的边界
+## 技术文档
 
-首次启动知识库、数据中台和评测记录为空，这是预期行为。原有私人保险资料和数据库没有随包分发；可自行上传有权使用的合成或公开资料，不要依靠重新复制私人数据库完成演示。RAG 需要前述公开 Embedding 文件，中文 PDF 需要公开字体。Mock 只能验证其标注的流程，不能替代真实产品证据。
+- [独立公开发布与验收说明](docs/PUBLIC-RELEASE.md)
+- [客户需求分析 Agent](docs/V9.0.3-CUSTOMER-NEEDS.md)
+- [数据中台设计](docs/DATA-PLATFORM.md)
+- [运行观测设计](docs/DATA-OBSERVATION.md)
+- [AI 评测中台](docs/EVALUATION-PLATFORM.md)
+- [真实模型评测中心](docs/REAL-MODEL-EVALUATION.md)
+- [Playwright 自动化测试](docs/PLAYWRIGHT.md)
+- [ECharts 可视化规范](docs/ECHARTS.md)
+- [shadcn/ui 组件规范](docs/SHADCN-UI.md)
+- [Motion 动画规范](docs/MOTION.md)
 
-`pnpm check` 依次生成路由类型、检查品牌和运行 TypeScript；无需 Git 仓库。评测记录在 Git 尚未初始化时，代码提交版本标记 UNKNOWN，不伪造原仓库版本。原迁移收据的历史校验仍然严格保留，公开包不包含对应历史标签，不能接管旧数据库；新建沙箱和独立知识库使用现有正常流程。
+---
 
-本项目需要 Node.js 服务端和持久本地存储，不能直接作为 GitHub Pages 静态网站运行。公开源码不等于公开运行私人知识库服务，云端认证、数据隔离和真实模型调用仍需单独验证。
+<p align="center">
+  <strong>小人儿保险 · 从需求理解到证据交付，让 AI 工作流可观察、可核验、可解释。</strong>
+</p>
