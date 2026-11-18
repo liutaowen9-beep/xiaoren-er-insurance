@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  面向 AI 售前解决方案顾问场景，展示从业务需求理解、私有知识检索、工具编排、证据核验到报告交付的完整技术实践。
+  展示从业务需求理解、私有知识检索、工具编排、证据核验到报告交付的完整技术实践。
 </p>
 
 <p align="center">
@@ -26,16 +26,10 @@
   ·
   <a href="#本地运行">本地运行</a>
   ·
-  <a href="#面试展示建议">面试展示建议</a>
+  <a href="docs/INTERVIEW-GUIDE.md">面试讲解指南</a>
 </p>
 
 > **项目状态**：公开源码与本地运行说明已发布；目前没有公网在线演示地址。项目定位为本地单用户技术演示，不是保险销售、投保、支付或承保系统。
-
-![小人儿保险桌面工作台](docs/images/workspace-desktop.png)
-
-<p align="center">
-  <em>桌面端工作台截图。截图用于展示界面与信息架构，不代表真实付费模型输出效果。</em>
-</p>
 
 ---
 
@@ -67,9 +61,31 @@
 | AI 评测中台 | 版本化数据集、RAG 指标、Agent 观测回放、离线规则与人工复核 | 让评测过程可追溯，明确指标边界 |
 | 真实模型评测中心 | 模型配置、逐任务授权、Token/性能/费用记录、规则评分与对比 | 为受控模型评测提供流程基础 |
 
+### 界面预览
+
+<table>
+  <thead>
+    <tr>
+      <th align="center">桌面端工作台</th>
+      <th align="center">移动端工作台</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center" width="75%">
+        <img src="docs/images/workspace-desktop.png" width="620" alt="小人儿保险桌面端工作台" />
+      </td>
+      <td align="center" width="25%">
+        <img src="docs/images/workspace-mobile.png" width="180" alt="小人儿保险移动端工作台" />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<sub>截图用于展示界面与信息架构，不代表真实付费模型输出效果。</sub>
+
 页面入口示例：工作台 <code>/</code>、聊天 <code>/chat</code>、知识库 <code>/knowledge</code>、业务分析 <code>/analysis</code>、报告 <code>/reports</code>、数据中台 <code>/data-platform</code>、评测中台 <code>/evaluation</code>、模型评测 <code>/evaluation/models</code>。
 
-![小人儿保险移动端工作台](docs/images/workspace-mobile.png)
 
 ## 端到端业务流程
 
@@ -276,24 +292,6 @@ pnpm-lock.yaml           # pnpm 依赖锁文件
 AGENTS.md                # 项目开发与品牌规范
 ```
 
-## 面试展示建议
-
-如果用于 AI 售前解决方案顾问岗位，可以按以下顺序讲解：
-
-1. **业务理解**：为什么保险资料问答不能只依赖大模型，需要先识别需求、资料范围和信息缺口。
-2. **总体方案**：为什么采用 Next.js + LangGraph + RAG，前后端、模型、工具和数据如何协作。
-3. **核心技术**：如何实现 StateGraph 条件路由、工具白名单、RAG 版本过滤和来源追溯。
-4. **质量与安全**：如何处理无证据、资料冲突、取消、超时、Mock 与真实模型的边界。
-5. **交付方式**：如何通过结构化报告、DOCX/PDF、自动化测试和运行观测形成可检查的交付结果。
-
-### 90 秒项目介绍参考
-
-> 我做的项目叫“小人儿保险”，它是一个面向保险资料检索和业务分析场景的 AI Agent 演示平台。它不是简单的聊天机器人，而是把客户需求结构化、知识库检索、工具执行、原文证据核验和报告生成串成一套工作流。
->
-> 技术上，前端和服务端使用 Next.js、React 和 TypeScript；复杂任务通过 LangGraph 管理状态和条件路由；RAG 使用本地 Embedding 与 SQLite 保存文档版本、切片和向量；模型通过服务端适配 DeepSeek。为了让结果可追溯，我还设计了数据中台和评测中台，记录数据版本、运行过程和可计算指标。
->
-> 项目中特别重视证据边界：没有资料就明确提示资料不足，来源冲突就保留待核实，不把模型生成直接当成保险条款结论。当前版本以本地单用户演示为主，真实付费模型和多用户公网部署仍需单独验收。
-
 ## 设计边界与后续规划
 
 ### 当前边界
@@ -313,6 +311,7 @@ AGENTS.md                # 项目开发与品牌规范
 
 ## 技术文档
 
+- [面试讲解指南](docs/INTERVIEW-GUIDE.md)
 - [独立公开发布与验收说明](docs/PUBLIC-RELEASE.md)
 - [客户需求分析 Agent](docs/V9.0.3-CUSTOMER-NEEDS.md)
 - [数据中台设计](docs/DATA-PLATFORM.md)
