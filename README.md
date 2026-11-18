@@ -25,13 +25,27 @@
   <a href="docs/PUBLIC-RELEASE.md">公开发布与验收说明</a>
   ·
   <a href="#本地运行">本地运行</a>
-  ·
-  <a href="docs/INTERVIEW-GUIDE.md">面试讲解指南</a>
 </p>
 
 > **项目状态**：公开源码与本地运行说明已发布；目前没有公网在线演示地址。项目定位为本地单用户技术演示，不是保险销售、投保、支付或承保系统。
 
 ---
+
+## 项目截图
+
+<p align="center">
+  <a href="docs/images/workspace-desktop.png">
+    <img src="docs/images/workspace-desktop.png" width="720" alt="小人儿保险桌面端工作台" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="docs/images/workspace-mobile.png">
+    <img src="docs/images/workspace-mobile.png" width="260" alt="小人儿保险移动端工作台" />
+  </a>
+</p>
+
+<sub>截图用于展示界面与信息架构，不代表真实付费模型输出效果。点击图片可查看原始高清图。</sub>
 
 ## 项目简介
 
@@ -60,29 +74,6 @@
 | 数据中台 | 只读资产扫描、版本、质量检查、SHA-256 快照、血缘与运行观测 | 支持数据资产治理和运行追踪 |
 | AI 评测中台 | 版本化数据集、RAG 指标、Agent 观测回放、离线规则与人工复核 | 让评测过程可追溯，明确指标边界 |
 | 真实模型评测中心 | 模型配置、逐任务授权、Token/性能/费用记录、规则评分与对比 | 为受控模型评测提供流程基础 |
-
-### 界面预览
-
-<table>
-  <thead>
-    <tr>
-      <th align="center">桌面端工作台</th>
-      <th align="center">移动端工作台</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td align="center" width="75%">
-        <img src="docs/images/workspace-desktop.png" width="620" alt="小人儿保险桌面端工作台" />
-      </td>
-      <td align="center" width="25%">
-        <img src="docs/images/workspace-mobile.png" width="180" alt="小人儿保险移动端工作台" />
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<sub>截图用于展示界面与信息架构，不代表真实付费模型输出效果。</sub>
 
 页面入口示例：工作台 <code>/</code>、聊天 <code>/chat</code>、知识库 <code>/knowledge</code>、业务分析 <code>/analysis</code>、报告 <code>/reports</code>、数据中台 <code>/data-platform</code>、评测中台 <code>/evaluation</code>、模型评测 <code>/evaluation/models</code>。
 
@@ -129,7 +120,7 @@ flowchart TB
     API --> MODEL_EVAL[(模型评测 SQLite)]
 ```
 
-### Agent 工作流设计
+## Agent 工作流设计
 
 LangGraph 用于管理有状态、多步骤的任务，而不是简单地把所有工作塞进一条超长提示词。
 
@@ -154,7 +145,7 @@ flowchart TD
 - 证据不足、资料冲突或任务失败时保留明确状态，不把未知值补成确定结论。
 - 当前没有启用跨进程自动恢复的持久 checkpoint，不将其描述为后台持久任务队列。
 
-### RAG 检索方案
+## RAG 检索方案
 
 1. 校验文件类型、大小与哈希，解析 PDF、DOCX、TXT、Markdown。
 2. 按自然边界和 Token 上限切片，保留文档与页码关联。
@@ -311,7 +302,7 @@ AGENTS.md                # 项目开发与品牌规范
 
 ## 技术文档
 
-- [面试讲解指南](docs/INTERVIEW-GUIDE.md)
+- [**AI 售前解决方案顾问面试指南**](docs/INTERVIEW-GUIDE.md)
 - [独立公开发布与验收说明](docs/PUBLIC-RELEASE.md)
 - [客户需求分析 Agent](docs/V9.0.3-CUSTOMER-NEEDS.md)
 - [数据中台设计](docs/DATA-PLATFORM.md)
